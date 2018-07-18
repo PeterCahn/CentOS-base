@@ -5,6 +5,11 @@ ENV container docker
 ENV http_proxy http://proxy.csi.it:3128
 ENV https_proxy  http://proxy.csi.it:3128
 
+# Add script to download JDK from Oracle
+ADD get-java.sh /usr/sbin/get-java.sh
+RUN chmod -v +rwx /usr/sbin/get-java.sh \
+	&& sed -i -e 's/\r$//' /usr/sbin/get-java.sh
+
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
 systemd-tmpfiles-setup.service ] || rm -f $i; done); \
 rm -f /lib/systemd/system/multi-user.target.wants/*;\
@@ -19,13 +24,12 @@ rm -f /lib/systemd/system/anaconda.target.wants/*;
 #RUN sed -i 's/keepcache=0/keepcache=1/g' /etc/yum.conf
 
 #Install Oracle JVM
-RUN java_version=8u172; \
+RUN java_version=8u181; \
     java_bnumber=11; \
-    java_semver=1.8.0_171; \
+    java_semver=1.8.0_181; \
     java_hash=429c3184b10d7af2bb5db3faf20b467566eb5bd95778f8339352c180c8ba48a1; \
-    yum -y install wget && yum clean all
-RUN wget -L --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" \
-    http://download.oracle.com/otn-pub/java/jdk/$java_version-b$java_bnumber/a58eab1ec242421181065cdc37240b08/jdk-$java_version-linux-x64.tar.gz \
+    yum -y install wget && yum clean all \
+	&& /usr/sbin/get-java.sh 8 tar.gz \
     && tar -zxvf jdk-$java_version-linux-x64.tar.gz -C /opt \
     && rm jdk-$java_version-linux-x64.tar.gz \
     && ln -sf /opt/jdk$java_semver/ /opt/jre-home \
