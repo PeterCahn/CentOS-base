@@ -51,6 +51,9 @@ RUN yum -y install unzip  && yum clean all \
 # Install FreeIPA client and download Hortonworks distribution
 RUN yum install -y ipa-client dbus-python perl 'perl(Data::Dumper)' 'perl(Time::HiRes)' && yum clean all 
 
+# Install ntp	
+RUN yum install -y ntp && yum clean all
+
 ARG zeppelin_user=zeppelin_dock1
 ENV env_zeppelin_user=$zeppelin_user
 
