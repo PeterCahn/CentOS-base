@@ -2,13 +2,6 @@
 FROM centos:7
 
 ENV container docker
-ENV http_proxy http://proxy.csi.it:3128
-ENV https_proxy  http://proxy.csi.it:3128
-
-# Add script to download JDK from Oracle
-ADD get-java.sh /usr/sbin/get-java.sh
-RUN chmod -v +rwx /usr/sbin/get-java.sh \
-	&& sed -i -e 's/\r$//' /usr/sbin/get-java.sh
 
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
 systemd-tmpfiles-setup.service ] || rm -f $i; done); \
@@ -20,9 +13,11 @@ rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
 rm -f /lib/systemd/system/basic.target.wants/*;\
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
-#enable cache
-#RUN sed -i 's/keepcache=0/keepcache=1/g' /etc/yum.conf
-
+# Add script to download JDK from Oracle
+ADD get-java.sh /usr/sbin/get-java.sh
+RUN chmod -v +rwx /usr/sbin/get-java.sh \
+	&& sed -i -e 's/\r$//' /usr/sbin/get-java.sh
+	
 #Install Oracle JVM
 RUN java_version=8u181; \
     java_bnumber=11; \
