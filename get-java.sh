@@ -6,6 +6,8 @@
 # jdk_version: 8(default) or 9
 # ext: rpm or tar.gz
 
+echo "Installing java..."
+
 jdk_version=${1:-8}
 ext=${2:-rpm}
 
@@ -26,6 +28,7 @@ readonly jdk_download_url4=$(
 )
 
 for dl_url in ${jdk_download_url4[@]}; do
+	echo "wget from: $dl_url"
     wget --no-cookies \
          --no-check-certificate \
          --header "Cookie: oraclelicense=accept-securebackup-cookie" \
