@@ -1,4 +1,3 @@
-#FROM krallin/centos-tini:centos7
 FROM centos:centos7
 
 ENV container docker
@@ -28,8 +27,8 @@ RUN java_version=8u181; \
 	java_semver=1.8.0_181; \
 	java_hash=96a7b8442fe848ef90c96a2fad6ed6d1; \
 	yum -y install wget \ 
-	&& wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/$java_version-b$java_bnumber/$java_hash/jdk-$java_version-linux-x64.tar.gz" \
-	#&& /usr/sbin/get-java.sh 8 tar.gz \	
+	#&& wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/$java_version-b$java_bnumber/$java_hash/jdk-$java_version-linux-x64.tar.gz" \
+	&& /usr/sbin/get-java.sh 8 tar.gz \	
 	#&& wget --timeout=1 --tries=5 --retry-connrefused --no-check-certificate -c --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/10.0.1+10/fb4372174a714e6b8c52526dc134031e/jdk-10.0.1_linux-x64_bin.tar.gz \
     && tar -zxvf jdk-$java_version-linux-x64.tar.gz -C /opt \
     && rm jdk-$java_version-linux-x64.tar.gz \
@@ -53,10 +52,12 @@ RUN yum -y install unzip  && yum clean all \
     && rm jce_policy-8.zip \
     && chmod -R 640 /opt/jre-home/jre/lib/security/ \
 	&& chown -R root:root /opt/jre-home/jre/lib/security/
+
+# Install ntp
+RUN yum install -y ntp && yum clean all
 	
 # Install FreeIPA client and download Hortonworks distribution
-RUN yum install -y ipa-client dbus-python perl 'perl(Data::Dumper)' 'perl(Time::HiRes)' && yum clean all \
-	&& yum install -y ntp && yum clean all
+RUN yum install -y ipa-client dbus-python perl 'perl(Data::Dumper)' 'perl(Time::HiRes)' && yum clean all
 
 ARG zeppelin_user=zeppelin_dock1
 ENV env_zeppelin_user=$zeppelin_user
@@ -73,6 +74,16 @@ RUN useradd -ms /bin/bash $env_zeppelin_user \
 #    && chown -R $env_zeppelin_user:$env_zeppelin_user /usr/hdp/2.6.0.3-8/zeppelin/conf/interpreter.json \
     && chown -R $env_zeppelin_user:$env_zeppelin_user /usr/hdp/2.6.0.3-8/zeppelin/local-repo \
     && ls -lat /usr/hdp/2.6.0.3-8/zeppelin/interpreter/sh
+	
+## Patch per zeppelin
+RUN export https_proxy=http://proxy-srv.csi.it:3128 \
+&& export http_proxy=http://proxy-srv.csi.it:3128 \
+&& wget --no-check-certificate https://github.com/seraus/whynot/tree/master/patch-zeppelin/zeppelin.sh -P /tmp \
+&& wget --no-check-certificate https://github.com/seraus/whynot/tree/master/patch-zeppelin/interpreter.sh -P /tmp \
+&& wget --no-check-certificate https://github.com/seraus/whynot/blob/master/patch-zeppelin/zeppelin-web-0.7.0.2.6.0.3-8.war -P /tmp \
+&& cp /tmp/zeppelin.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ -f \
+&& cp /tmp/interpreter.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ -f \
+&& cp /tmp/zeppelin-web-0.7.0.2.6.0.3-8.war /usr/hdp/2.6.0.3-8/zeppelin/lib/ -f
 	
 VOLUME [ "/sys/fs/cgroup" ]
 
