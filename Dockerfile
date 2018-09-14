@@ -2,9 +2,9 @@ FROM centos:centos7
 
 ENV container docker
 
-# Da usare se si esegue in locale e si fa la build in locale
-#ENV http_proxy http://proxy.csi.it:3128
-#ENV https_proxy http://proxy.csi.it:3128
+# Da usare se si esegue in locale e si fa la build in locale (testato in locale con "proxy.csi.it")
+ENV http_proxy http://proxy-srv.csi.it:3128
+ENV https_proxy  http://proxy-srv.csi.it:3128
 
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
 systemd-tmpfiles-setup.service ] || rm -f $i; done); \
@@ -76,9 +76,7 @@ RUN useradd -ms /bin/bash $env_zeppelin_user \
     && ls -lat /usr/hdp/2.6.0.3-8/zeppelin/interpreter/sh
 	
 ## Patch per zeppelin
-RUN export https_proxy=http://proxy-srv.csi.it:3128 \
-&& export http_proxy=http://proxy-srv.csi.it:3128 \
-&& wget --no-check-certificate https://github.com/seraus/whynot/tree/master/patch-zeppelin/zeppelin.sh -P /tmp \
+RUN wget --no-check-certificate https://github.com/seraus/whynot/tree/master/patch-zeppelin/zeppelin.sh -P /tmp \
 && wget --no-check-certificate https://github.com/seraus/whynot/tree/master/patch-zeppelin/interpreter.sh -P /tmp \
 && wget --no-check-certificate https://github.com/seraus/whynot/blob/master/patch-zeppelin/zeppelin-web-0.7.0.2.6.0.3-8.war -P /tmp \
 && cp /tmp/zeppelin.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ -f \
