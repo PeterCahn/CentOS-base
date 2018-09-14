@@ -82,7 +82,6 @@ RUN wget --no-check-certificate https://github.com/seraus/whynot/tree/master/pat
 && cp /tmp/zeppelin.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ -f \
 && cp /tmp/interpreter.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ -f \
 && cp /tmp/zeppelin-web-0.7.0.2.6.0.3-8.war /usr/hdp/2.6.0.3-8/zeppelin/lib/ -f
-
 	
 VOLUME [ "/sys/fs/cgroup" ]
 
