@@ -32,7 +32,11 @@ RUN java_version=8u181; \
 RUN /usr/sbin/get-java.sh 8 tar.gz 	
 	#&& wget --timeout=1 --tries=5 --retry-connrefused --no-check-certificate -c --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/10.0.1+10/fb4372174a714e6b8c52526dc134031e/jdk-10.0.1_linux-x64_bin.tar.gz \
 
-RUN tar -zxvf jdk-$java_version-linux-x64.tar.gz -C /opt \
+RUN java_version=8u181; \
+	java_bnumber=13; \
+	java_semver=1.8.0_181; \
+	java_hash=96a7b8442fe848ef90c96a2fad6ed6d1; \
+	tar -zxvf jdk-$java_version-linux-x64.tar.gz -C /opt \
     && rm jdk-$java_version-linux-x64.tar.gz \
     && ln -sf /opt/jdk$java_semver/ /opt/jre-home
 
