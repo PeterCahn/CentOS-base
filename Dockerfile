@@ -3,8 +3,8 @@ FROM centos:centos7
 ENV container docker
 
 # Da usare se si esegue in locale e si fa la build in locale (testato in locale con "proxy.csi.it")
-#ENV http_proxy http://proxy-srv.csi.it:3128
-#ENV https_proxy  http://proxy-srv.csi.it:3128
+ENV http_proxy http://proxy-srv.csi.it:3128
+ENV https_proxy  http://proxy-srv.csi.it:3128
 
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
 systemd-tmpfiles-setup.service ] || rm -f $i; done); \
