@@ -82,11 +82,11 @@ RUN useradd -ms /bin/bash $env_zeppelin_user \
 #RUN export http_proxy=http://proxy-srv.csi.it:3128; \
 #export https_proxy=http://proxy-srv.csi.it:3128; \
 RUN wget --no-check-certificate https://raw.githubusercontent.com/PeterCahn/CentOS-base/master/patch-zeppelin/zeppelin.sh -P /tmp  && \ 
-wget --no-check-certificate https://raw.githubusercontent.com/PeterCahn/CentOS-base/master/patch-zeppelin/interpreter.sh -P /tmp && \ 
-wget --no-check-certificate https://github.com/PeterCahn/CentOS-base/raw/master/patch-zeppelin/zeppelin-web-0.7.0.2.6.0.3-8.war -P /tmp \
-&& cp /tmp/zeppelin.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ -f \
-&& cp /tmp/interpreter.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ -f \
-&& cp /tmp/zeppelin-web-0.7.0.2.6.0.3-8.war /usr/hdp/2.6.0.3-8/zeppelin/lib/ -f
+	wget --no-check-certificate https://raw.githubusercontent.com/PeterCahn/CentOS-base/master/patch-zeppelin/interpreter.sh -P /tmp && \ 
+	wget --no-check-certificate https://github.com/PeterCahn/CentOS-base/raw/master/patch-zeppelin/zeppelin-web-0.7.0.2.6.0.3-8.war -P /tmp \
+	mv -f /tmp/zeppelin.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ && \ 
+	mv -f /tmp/interpreter.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ && \ 
+	mv -f /tmp/zeppelin-web-0.7.0.2.6.0.3-8.war /usr/hdp/2.6.0.3-8/zeppelin/lib/
 	
 VOLUME [ "/sys/fs/cgroup" ]
 
