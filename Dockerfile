@@ -79,7 +79,9 @@ RUN useradd -ms /bin/bash $env_zeppelin_user \
     && ls -lat /usr/hdp/2.6.0.3-8/zeppelin/interpreter/sh
 
 ## Patch per zeppelin
-RUN wget --no-check-certificate https://github.com/seraus/whynot/tree/master/patch-zeppelin/zeppelin.sh -P /tmp \
+RUN export http_proxy=http://proxy-srv.csi.it:3128; \
+export https_proxy=http://proxy-srv.csi.it:3128; \
+wget --no-check-certificate https://github.com/seraus/whynot/tree/master/patch-zeppelin/zeppelin.sh -P /tmp \
 && wget --no-check-certificate https://github.com/seraus/whynot/tree/master/patch-zeppelin/interpreter.sh -P /tmp \
 && wget --no-check-certificate https://github.com/seraus/whynot/blob/master/patch-zeppelin/zeppelin-web-0.7.0.2.6.0.3-8.war -P /tmp \
 && cp /tmp/zeppelin.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ -f \
