@@ -1,12 +1,6 @@
 FROM centos:centos7
 
-ENV container docker
-
-# Da usare se si esegue in locale e si fa la build in locale (testato in locale con "proxy.csi.it")
-#ENV http_proxy http://proxy-srv.csi.it:3128
-#ENV https_proxy  http://proxy-srv.csi.it:3128
-#ENV no_proxy localhost,127.0.0.1
-#ENV NO_PROXY localhost,127.0.0.1
+ENV container zeppelin
 
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
 systemd-tmpfiles-setup.service ] || rm -f $i; done); \
@@ -62,7 +56,7 @@ RUN yum install -y ntp && yum clean all
 # Install FreeIPA client and download Hortonworks distribution
 RUN yum install -y ipa-client dbus-python perl 'perl(Data::Dumper)' 'perl(Time::HiRes)' && yum clean all
 
-ARG zeppelin_user=zeppelin_dock1
+ARG zeppelin_user=zeppelinUser
 ENV env_zeppelin_user=$zeppelin_user
 
 # Install Zeppelin
@@ -81,13 +75,18 @@ RUN useradd -ms /bin/bash $env_zeppelin_user \
 ## Patch per zeppelin
 #RUN export http_proxy=http://proxy-srv.csi.it:3128; \
 #export https_proxy=http://proxy-srv.csi.it:3128; \
-RUN wget --no-check-certificate https://raw.githubusercontent.com/PeterCahn/CentOS-base/master/patch-zeppelin/zeppelin.sh -P /tmp  && \ 
-	wget --no-check-certificate https://raw.githubusercontent.com/PeterCahn/CentOS-base/master/patch-zeppelin/interpreter.sh -P /tmp && \ 
-	wget --no-check-certificate https://github.com/PeterCahn/CentOS-base/raw/master/patch-zeppelin/zeppelin-web-0.7.0.2.6.0.3-8.war -P /tmp && \
-	chmod 777 /tmp/*.sh && \
+
+ADD /patch-zeppelin/zeppelin.sh /tmp/zeppelin.sh
+ADD /patch-zeppelin/interpreter.sh /tmp/interpreter.sh
+ADD /patch-zeppelin/zeppelin-web-0.7.0.2.6.0.3-8.war /tmp/zeppelin-web-0.7.0.2.6.0.3-8.war
+#RUN wget --no-check-certificate https://raw.githubusercontent.com/PeterCahn/CentOS-base/master/patch-zeppelin/zeppelin.sh -P /tmp  && \ 
+#	wget --no-check-certificate https://raw.githubusercontent.com/PeterCahn/CentOS-base/master/patch-zeppelin/interpreter.sh -P /tmp && \ 
+#	wget --no-check-certificate https://github.com/PeterCahn/CentOS-base/raw/master/patch-zeppelin/zeppelin-web-0.7.0.2.6.0.3-8.war -P /tmp && \
+RUN	chmod 777 /tmp/*.sh && \
 	/bin/cp -f /tmp/zeppelin.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ && \ 
 	/bin/cp -f /tmp/interpreter.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ && \ 
-	/bin/cp -f /tmp/zeppelin-web-0.7.0.2.6.0.3-8.war /usr/hdp/2.6.0.3-8/zeppelin/lib/
+	/bin/cp -f /tmp/zeppelin-web-0.7.0.2.6.0.3-8.war /usr/hdp/2.6.0.3-8/zeppelin/lib/ && \
+	rm -f /tmp/*.sh
 	
 VOLUME [ "/sys/fs/cgroup" ]
 
