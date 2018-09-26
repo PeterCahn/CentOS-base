@@ -86,7 +86,8 @@ RUN	chmod 777 /tmp/*.sh && \
 	/bin/cp -f /tmp/zeppelin.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ && \ 
 	/bin/cp -f /tmp/interpreter.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ && \ 
 	/bin/cp -f /tmp/zeppelin-web-0.7.0.2.6.0.3-8.war /usr/hdp/2.6.0.3-8/zeppelin/lib/ && \
-	rm -f /tmp/*.sh
+	rm -f /tmp/*.sh && \
+	rm -f /tmp/*.war
 	
 VOLUME [ "/sys/fs/cgroup" ]
 
