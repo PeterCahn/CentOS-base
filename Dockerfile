@@ -26,7 +26,7 @@ RUN java_version=8u181; \
 	java_bnumber=13; \
 	java_semver=1.8.0_181; \
 	java_hash=96a7b8442fe848ef90c96a2fad6ed6d1; \
-	/usr/sbin//get-java.sh 8 tar.gz \
+	/usr/sbin/get-java.sh 8 tar.gz \
 	&& tar -zxvf jdk-8u181-linux-x64.tar.gz -C /opt \
 	&& rm jdk-8u181-linux-x64.tar.gz \
 	&& ln -sf /opt/jdk$java_semver/ /opt/jre-home \
