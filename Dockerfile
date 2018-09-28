@@ -21,6 +21,7 @@ RUN chmod -v 777 /usr/sbin/get-java.sh \
 RUN yum -y install wget \ 
 	#&& wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/$java_version-b$java_bnumber/$java_hash/jdk-$java_version-linux-x64.tar.gz" \
 	#&& wget --timeout=1 --tries=5 --retry-connrefused --no-check-certificate -c --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/10.0.1+10/fb4372174a714e6b8c52526dc134031e/jdk-10.0.1_linux-x64_bin.tar.gz \
+	
 
 RUN java_version=8u181; \
 	java_bnumber=13; \
@@ -72,16 +73,10 @@ RUN useradd -ms /bin/bash $env_zeppelin_user \
     && chown -R $env_zeppelin_user:$env_zeppelin_user /usr/hdp/2.6.0.3-8/zeppelin/local-repo \
     && ls -lat /usr/hdp/2.6.0.3-8/zeppelin/interpreter/sh
 
-## Patch per zeppelin
-#RUN export http_proxy=http://proxy-srv.csi.it:3128; \
-#export https_proxy=http://proxy-srv.csi.it:3128; \
-
 ADD /patch-zeppelin/zeppelin.sh /tmp/zeppelin.sh
 ADD /patch-zeppelin/interpreter.sh /tmp/interpreter.sh
 ADD /patch-zeppelin/zeppelin-web-0.7.0.2.6.0.3-8.war /tmp/zeppelin-web-0.7.0.2.6.0.3-8.war
-#RUN wget --no-check-certificate https://raw.githubusercontent.com/PeterCahn/CentOS-base/master/patch-zeppelin/zeppelin.sh -P /tmp  && \ 
-#	wget --no-check-certificate https://raw.githubusercontent.com/PeterCahn/CentOS-base/master/patch-zeppelin/interpreter.sh -P /tmp && \ 
-#	wget --no-check-certificate https://github.com/PeterCahn/CentOS-base/raw/master/patch-zeppelin/zeppelin-web-0.7.0.2.6.0.3-8.war -P /tmp && \
+
 RUN	chmod 777 /tmp/*.sh && \
 	/bin/cp -f /tmp/zeppelin.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ && \ 
 	/bin/cp -f /tmp/interpreter.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ && \ 
