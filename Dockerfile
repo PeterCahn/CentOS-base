@@ -51,8 +51,12 @@ RUN yum -y install unzip  && yum clean all \
     && chmod -R 640 /opt/jre-home/jre/lib/security/ \
 	&& chown -R root:root /opt/jre-home/jre/lib/security/
 
-# Install ntp
-RUN yum install -y ntp && yum clean all
+# Install ntp and jq 
+RUN yum install -y ntp && \
+	yum clean all && \
+	wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -O jq && \
+	chmod +x jq && \
+	mv jq /usr/local/bin
 	
 # Install FreeIPA client and download Hortonworks distribution
 RUN yum install -y ipa-client dbus-python perl 'perl(Data::Dumper)' 'perl(Time::HiRes)' && yum clean all
