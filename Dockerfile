@@ -27,8 +27,8 @@ RUN java_version=8u181; \
 	java_semver=1.8.0_181; \
 	java_hash=96a7b8442fe848ef90c96a2fad6ed6d1; \
 	wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/$java_version-b$java_bnumber/$java_hash/jdk-$java_version-linux-x64.tar.gz" \
-	&& tar -zxvf /tmp/jdk-8u181-linux-x64.tar.gz -C /opt \
-	&& rm /tmp/jdk-8u181-linux-x64.tar.gz \
+	&& tar -zxvf jdk-8u181-linux-x64.tar.gz -C /opt \
+	&& rm jdk-8u181-linux-x64.tar.gz \
 	&& ln -sf /opt/jdk$java_semver/ /opt/jre-home \
 	&& alternatives --install /usr/bin/java java /opt/jdk$java_semver/jre/bin/java 20000 \
     && alternatives --install /usr/bin/jar jar /opt/jdk$java_semver/bin/jar 20000 \
