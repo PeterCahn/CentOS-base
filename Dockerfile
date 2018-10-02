@@ -13,23 +13,22 @@ rm -f /lib/systemd/system/basic.target.wants/*;\
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
 # Add script to download JDK from Oracle
-ADD get-java.sh /usr/sbin/get-java.sh
-RUN chmod -v 777 /usr/sbin/get-java.sh \
-	&& sed -i -e 's/\r$//' /usr/sbin/get-java.sh
+#ADD get-java.sh /usr/sbin/get-java.sh 
+#RUN chmod -v 777 /usr/sbin/get-java.sh \
+	#&& sed -i -e 's/\r$//' /usr/sbin/get-java.sh
+
 	
 #Install Oracle JVM
-RUN yum -y install wget \ 
-	#&& wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/$java_version-b$java_bnumber/$java_hash/jdk-$java_version-linux-x64.tar.gz" \
+RUN yum -y install wget 
 	#&& wget --timeout=1 --tries=5 --retry-connrefused --no-check-certificate -c --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/10.0.1+10/fb4372174a714e6b8c52526dc134031e/jdk-10.0.1_linux-x64_bin.tar.gz \
 	
-
 RUN java_version=8u181; \
 	java_bnumber=13; \
 	java_semver=1.8.0_181; \
 	java_hash=96a7b8442fe848ef90c96a2fad6ed6d1; \
-	/usr/sbin/get-java.sh 8 tar.gz \
-	&& tar -zxvf jdk-8u181-linux-x64.tar.gz -C /opt \
-	&& rm jdk-8u181-linux-x64.tar.gz \
+	wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/$java_version-b$java_bnumber/$java_hash/jdk-$java_version-linux-x64.tar.gz" \
+	&& tar -zxvf /tmp/jdk-8u181-linux-x64.tar.gz -C /opt \
+	&& rm /tmp/jdk-8u181-linux-x64.tar.gz \
 	&& ln -sf /opt/jdk$java_semver/ /opt/jre-home \
 	&& alternatives --install /usr/bin/java java /opt/jdk$java_semver/jre/bin/java 20000 \
     && alternatives --install /usr/bin/jar jar /opt/jdk$java_semver/bin/jar 20000 \
@@ -52,11 +51,7 @@ RUN yum -y install unzip  && yum clean all \
 	&& chown -R root:root /opt/jre-home/jre/lib/security/
 
 # Install ntp and jq 
-RUN yum install -y ntp && \
-	yum clean all && \
-	wget https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -O jq && \
-	chmod +x jq && \
-	mv jq /usr/local/bin
+RUN yum install -y ntp && yum clean all	
 	
 # Install FreeIPA client and download Hortonworks distribution
 RUN yum install -y ipa-client dbus-python perl 'perl(Data::Dumper)' 'perl(Time::HiRes)' && yum clean all
@@ -81,7 +76,7 @@ ADD /patch-zeppelin/zeppelin.sh /tmp/zeppelin.sh
 ADD /patch-zeppelin/interpreter.sh /tmp/interpreter.sh
 ADD /patch-zeppelin/zeppelin-web-0.7.0.2.6.0.3-8.war /tmp/zeppelin-web-0.7.0.2.6.0.3-8.war
 
-RUN	chmod 777 /tmp/*.sh && \
+RUN	chmod +x /tmp/*.sh && \
 	/bin/cp -f /tmp/zeppelin.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ && \ 
 	/bin/cp -f /tmp/interpreter.sh /usr/hdp/2.6.0.3-8/zeppelin/bin/ && \ 
 	/bin/cp -f /tmp/zeppelin-web-0.7.0.2.6.0.3-8.war /usr/hdp/2.6.0.3-8/zeppelin/lib/ && \
