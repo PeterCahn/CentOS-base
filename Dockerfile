@@ -54,7 +54,10 @@ RUN yum -y install unzip  && yum clean all \
 RUN yum install -y ntp && yum clean all	
 	
 # Install FreeIPA client and download Hortonworks distribution
-RUN yum install -y ipa-client dbus-python perl 'perl(Data::Dumper)' 'perl(Time::HiRes)' && yum clean all
+RUN yum install -y ipa-client dbus-python perl 'perl(Data::Dumper)' 'perl(Time::HiRes)' && yum clean all && \
+	wget -q https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -O jq && \
+	chmod +x jq && \
+	mv jq /usr/local/bin
 
 ARG zeppelin_user=zeppelinUser
 ENV env_zeppelin_user=$zeppelin_user
